@@ -1,6 +1,18 @@
 library(googlesheets4)
+library(data.table)
 
+# Read Data collection/latest allocation sheet ----------------
 oxcgrt_datacollection_url <- "https://docs.google.com/spreadsheets/d/1D2ZJcmX0LQVzW9kiyyRrIN8SeuqMlcfcaX9eyK2vqfI/edit#gid=2022852213"
 
 oxcgrt_datacollection <- googlesheets4::range_read("1D2ZJcmX0LQVzW9kiyyRrIN8SeuqMlcfcaX9eyK2vqfI", sheet= "19 January 2021")
 
+# List all the countries that are currently being allocated -----------
+oxcgrtdata <- unique(fread("https://raw.githubusercontent.com/OxCGRT/covid-policy-tracker/master/data/OxCGRT_latest.csv",
+                           select = c("CountryCode")))
+
+# 
+
+
+
+# find list of sheet names
+#googlesheets4::sheet_names("1D2ZJcmX0LQVzW9kiyyRrIN8SeuqMlcfcaX9eyK2vqfI")
