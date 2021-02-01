@@ -8,7 +8,7 @@ library(stringr)
 # Process Date to pick out latest sheet -------------------------
 current_date <- Sys.Date()
 dayofweek <- as.POSIXlt(current_date)$wday
-alloc_date <- current_date - (dayofweek - 2)
+alloc_date <- current_date - ifelse((dayofweek - 2) >= 0, dayofweek - 2, dayofweek + 5)
 m <- month.name[month(alloc_date)]
 y <- year(alloc_date)
 d <- yday(alloc_date)
