@@ -21,7 +21,7 @@ oxcgrt_datacollection <- as.data.table(oxcgrt_datacollection)
 contributor_pods <- googlesheets4::range_read("1D2ZJcmX0LQVzW9kiyyRrIN8SeuqMlcfcaX9eyK2vqfI", sheet= "Who does what")
 contributor_pods <- as.data.table(contributor_pods)[!is.na(Name),.(Name, Group)]
                                                     
-contributor_pods[, PodID := lapply(contributor_pods$Group, function(x) ifelse(!is.na(x), str_subset(x, "[0-9]*$"), NA))]
+contributor_pods[, PodID := lapply(contributor_pods$Group, function(x) ifelse(!is.na(x), str_extract(x, "[0-9]*$"), NA_character_))]
 
 # List all the countries that are currently being allocated -----------
 oxcgrtdata <- unique(fread("https://raw.githubusercontent.com/OxCGRT/covid-policy-tracker/master/data/OxCGRT_latest.csv",
