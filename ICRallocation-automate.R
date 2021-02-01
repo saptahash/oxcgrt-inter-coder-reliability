@@ -25,11 +25,12 @@ contributor_pods[, PodID := lapply(contributor_pods$Group, function(x) ifelse(!i
 
 # Get country set of pods ------------------------------
 pods <- googlesheets4::range_read("1D2ZJcmX0LQVzW9kiyyRrIN8SeuqMlcfcaX9eyK2vqfI", sheet= "Pods")
-cols <- c("PodID" = "Pod ID", "Countries in pod")
+cols <- c(PodID = "Pod ID", "Countries in pod")
 pods <- as.data.table(pods)[,..cols]
 
 # merge pods-countries to contributor pods --------------------------
-pods[contributor_pods, on = .()]
+pods[contributor_pods, on = c(Pod ID = "PodID"), nomatch = 0L]
+
 # List all the countries that are currently being allocated -----------
 oxcgrtdata <- unique(fread("https://raw.githubusercontent.com/OxCGRT/covid-policy-tracker/master/data/OxCGRT_latest.csv",
                            select = c("CountryCode")))
