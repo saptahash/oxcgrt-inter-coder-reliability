@@ -23,6 +23,11 @@ contributor_pods <- as.data.table(contributor_pods)[!is.na(Name),.(Name, Group)]
                                                     
 contributor_pods[, PodID := lapply(contributor_pods$Group, function(x) ifelse(!is.na(x), str_extract(x, "[0-9]*$"), NA_character_))]
 
+# Get country set of pods ------------------------------
+pods <- googlesheets4::range_read("1D2ZJcmX0LQVzW9kiyyRrIN8SeuqMlcfcaX9eyK2vqfI", sheet= "Pods")
+cols <- c("Pod ID", "Countries in pod")
+pods <- as.data.table(pods)[,..cols]
+
 # List all the countries that are currently being allocated -----------
 oxcgrtdata <- unique(fread("https://raw.githubusercontent.com/OxCGRT/covid-policy-tracker/master/data/OxCGRT_latest.csv",
                            select = c("CountryCode")))
