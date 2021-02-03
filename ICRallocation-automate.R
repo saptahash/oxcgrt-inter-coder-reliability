@@ -1,6 +1,7 @@
 library(googlesheets4)
 library(data.table)
 library(stringr)
+library(lubridate)
 
 # Read Data collection/latest allocation sheet ----------------
 #oxcgrt_datacollection_url <- "https://docs.google.com/spreadsheets/d/1D2ZJcmX0LQVzW9kiyyRrIN8SeuqMlcfcaX9eyK2vqfI/edit#gid=2022852213"
@@ -11,8 +12,8 @@ dayofweek <- as.POSIXlt(current_date)$wday
 alloc_date <- current_date - ifelse((dayofweek - 2) >= 0, dayofweek - 2, dayofweek + 5)
 m <- month.name[month(alloc_date)]
 y <- year(alloc_date)
-d <- yday(alloc_date)
-sheet_name <- paste(yday(alloc_date), m, y)
+d <- mday(alloc_date)
+sheet_name <- paste(d, m, y)
 
 oxcgrt_datacollection <- googlesheets4::range_read("1D2ZJcmX0LQVzW9kiyyRrIN8SeuqMlcfcaX9eyK2vqfI", sheet= sheet_name)
 oxcgrt_datacollection <- as.data.table(oxcgrt_datacollection)
