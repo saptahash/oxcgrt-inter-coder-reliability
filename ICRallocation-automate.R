@@ -32,6 +32,9 @@ pods <- as.data.table(pods)[,..cols][,`Pod ID` := as.character(`Pod ID`)][!is.na
 # merge pods-countries to contributor pods --------------------------
 contributor_pods <- merge(contributor_pods, pods, by.x = "PodID", by.y = "Pod ID")
 
+# merge contributors-pods-countries to countributors-allocations ------------------
+oxcgrt_datacollection <- merge(oxcgrt_datacollection, contributor_pods, by = "Name")
+
 # List all the countries that are currently being allocated -----------
 oxcgrtdata <- unique(fread("https://raw.githubusercontent.com/OxCGRT/covid-policy-tracker/master/data/OxCGRT_latest.csv",
                            select = c("CountryCode")))
