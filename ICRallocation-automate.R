@@ -42,21 +42,34 @@ oxcgrtdata <- unique(fread("https://raw.githubusercontent.com/OxCGRT/covid-polic
 # remove any NAs from update column--------------------
 oxcgrt_datacollection <- oxcgrt_datacollection[!is.na(Update)]
 
-# Get random sample of 10 contributors --------------------------
+# Get random sample of 15 contributors --------------------------
 ICR_allocation <- data.table(Name = c(sample(oxcgrt_datacollection$Name, 15, replace = F)))
 
 # Which countries are they cuirrently allocated to update? --------------------------------
-ICR_allocation <- oxcgrt_datacollection[ICR_allocation, on = .(Name), .(Name, Update)]
+ICR_allocation <- oxcgrt_datacollection[ICR_allocation, on = .(Name), .(Name, Update, `Countries in pod`)]
 
 # Cleaning up Update column in case of collateral strings like "Build from.." -------------------------
 ICR_allocation <- ICR_allocation[, Update := str_remove_all(Update, " ")
                                  ][, Update := ifelse(str_length(Update) > 15, str_extract(Update, "[A-Z]{3}"), Update)
-                                   ][, Update := str_replace(Update, ",", "|")]
+                                   ][, Update := str_replace_all(Update, ",", "|")
+                                     ][, `Countries in pod` := str_remove_all(`Countries in pod`, " ")
+                                       ][, `Countries in pod` := str_replace_all(`Countries in pod`, ",", "|")
+                                         ][, pod_countries := lapply(ICR_allocation$`Countries in pod`, function(x) paste0(str_subset(oxcgrtdata$CountryCode, x), collapse = ","))]
 
 # Generating random allocations and Drop Update Allocation -----------------------------
-ICR_allocation <- ICR_allocation[, Allocation := lapply(ICR_allocation$Update, function(x) sample(str_subset(oxcgrtdata$CountryCode, x, negate = T), 1))
-                                 ][,.(Name, Allocation)] 
+outside_pod <- ICR_allocation[, Allocation := lapply(ICR_allocation$Update, function(x) sample(str_subset(oxcgrtdata$CountryCode, x, negate = T), 1))
+                                 ][,.(Name, Allocation)
+                                   ][, within_pod := 0][1:8]
+
+# Generating random allocations within Pods ---------------------------------
+within_pod <- ICR_allocation[, Allocation := mapply(function(x,y) sample(str_subset(unlist(str_split(x, ",")), y, negate = T),1), 
+                                                     x = ICR_allocation$pod_countries, 
+                                                     y = ICR_allocation$Update)
+                              ][,.(Name, Allocation)
+                                ][, within_pod := 1][9:15]
+
+# Combine the two 
+ICR_allocation <- rbind(outside_pod, within_pod)
 
 # output to a csv ------------------------
 fwrite(ICR_allocation, "./InterCoder_Allocation.csv")
-
