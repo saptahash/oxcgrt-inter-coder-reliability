@@ -22,15 +22,15 @@ oxcgrt_datacollection <- as.data.table(oxcgrt_datacollection)
 contributor_pods <- googlesheets4::range_read("1D2ZJcmX0LQVzW9kiyyRrIN8SeuqMlcfcaX9eyK2vqfI", sheet= "Who does what")
 contributor_pods <- as.data.table(contributor_pods)[!is.na(Name),.(Name, Group)]
                                                     
-contributor_pods[, PodID := lapply(contributor_pods$Group, function(x) ifelse(!is.na(x), str_extract(x, "[0-9]*$"), NA_character_))]
+contributor_pods[, PodID := unlist(lapply(contributor_pods$Group, function(x) ifelse(!is.na(x), str_extract(x, "[0-9]*$"), NA_character_)))]
 
 # Get country set of pods ------------------------------
 pods <- googlesheets4::range_read("1D2ZJcmX0LQVzW9kiyyRrIN8SeuqMlcfcaX9eyK2vqfI", sheet= "Pods")
 cols <- c(PodID = "Pod ID", "Countries in pod")
-pods <- as.data.table(pods)[,..cols]
+pods <- as.data.table(pods)[,..cols][,`Pod ID` := as.character(`Pod ID`)][!is.na(`Pod ID`)]
 
 # merge pods-countries to contributor pods --------------------------
-pods[contributor_pods, on = c(Pod ID = "PodID"), nomatch = 0L]
+contributor_pods <- merge(contributor_pods, pods, by.x = "PodID", by.y = "Pod ID")
 
 # List all the countries that are currently being allocated -----------
 oxcgrtdata <- unique(fread("https://raw.githubusercontent.com/OxCGRT/covid-policy-tracker/master/data/OxCGRT_latest.csv",
@@ -42,7 +42,7 @@ oxcgrt_datacollection <- oxcgrt_datacollection[!is.na(Update)]
 # Get random sample of 10 contributors --------------------------
 ICR_allocation <- data.table(Name = c(sample(oxcgrt_datacollection$Name, 15, replace = F)))
 
-# Which countries are they currently allocated to update? --------------------------------
+# Which countries are they cuirrently allocated to update? --------------------------------
 ICR_allocation <- oxcgrt_datacollection[ICR_allocation, on = .(Name), .(Name, Update)]
 
 # Cleaning up Update column in case of collateral strings like "Build from.." -------------------------
