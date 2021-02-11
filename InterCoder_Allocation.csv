@@ -1,16 +1,16 @@
-Name,Allocation,within_pod
-Alice Secheresse,IDN,0
-Inaara Sundargy,MEX,0
-Jennifer Gunther,LBY,0
-Scott Latham,URY,0
-Clara Portwood,VUT,0
-Leana Diekmann,JOR,0
-Gaia Lisi,HKG,0
-Suganthan Asokan,NZL,0
-Anandam Sarcar,SLB,1
-Jess Barreto,BFA,1
-Zongyue Liu,CHN,1
-Precious Oluwadara Olajide,CMR,1
-Maxime Bourdier,CRI,1
-Yiwen Sun,MNG,1
-Ursula Panzner,NER,1
+Name,Allocation,within_pod,Indicator
+Jai Wei,TON,0,C5
+Thomas Benson,TUR,0,C7
+Maryann Heil,POL,0,C5
+Yuxin Ma,GUY,0,C2
+Delia Tenaglia,CHL,0,H6
+Randy Taufik,TGO,0,C5
+Nicholas Wan,LUX,0,C4
+Jennifer Gunther,ERI,0,C6
+Praveen Rajendran,TON,1,C2
+Ehsan Rafian,BGR,1,H1
+Maxime Bourdier,CRI,1,C1
+Minsoo Bae,MUS,1,H7
+Purna Panda,SLB,1,H2
+Sagar Grewal,ZAF,1,C1
+Paul Anderson,PRY,1,H6
