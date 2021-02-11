@@ -71,5 +71,10 @@ within_pod <- ICR_allocation[, Allocation := mapply(function(x,y) sample(str_sub
 # Combine the two 
 ICR_allocation <- rbind(outside_pod, within_pod)
 
+# Generate random set of indicators --------------------------
+indicators <- c(unlist(lapply(seq(1:8), function(x) paste0("C", x))), 
+                unlist(lapply(seq(1:2), function(x) paste0("E", x))),
+                unlist(lapply(c(seq(1:3), 6,7), function(x) paste0("H", x))))
+  
 # output to a csv ------------------------
 fwrite(ICR_allocation, "./InterCoder_Allocation.csv")
