@@ -40,6 +40,7 @@ oxcgrtdata <- unique(fread("https://raw.githubusercontent.com/OxCGRT/covid-polic
                            select = c("CountryCode")))
 
 # remove any NAs from update column--------------------
+oxcgrt_datacollection <- as.data.table(oxcgrt_datacollection)
 oxcgrt_datacollection <- oxcgrt_datacollection[!is.na(Update)]
 
 # Get random sample of 15 contributors --------------------------
