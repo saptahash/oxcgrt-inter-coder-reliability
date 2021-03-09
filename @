@@ -1,0 +1,12 @@
+Status: Working 
+Changes introduces to handle dates at the start of each month. Initially
+would result in a bug if date was in the first week, fixed by changing
+the formula 
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# On branch master
+# Changes to be committed:
+#	modified:   .Rproj.user/957DD1EA/sources/prop/7E6F271E
+#	modified:   ICRallocation-automate.R
+#
