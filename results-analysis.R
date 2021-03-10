@@ -85,3 +85,19 @@ results_form %>%
 spec_indicator <- select(results_form[results_form$indicator == "C2",], indicator, code1, original_code)
 dims <- unique(c(spec_indicator$code1, spec_indicator$original_code))
 
+spec_indicator <- 
+  spec_indicator %>%
+  group_by(code1, original_code) %>%
+  summarise(n = n()) %>%
+  mutate(n= ifelse(code1 != original_code, n, 2*n))
+
+A <- matrix(NA, nrow = length(dims), ncol = length(dims), byrow = T)
+
+rownames(A) <- dims
+colnames(A) <- dims
+
+for(i in 1:nrow(spec_indicator)){
+  A[(spec_indicator$code1)[i], (spec_indicator$original_code)[i]] = (spec_indicator$n)[i]
+  A[(spec_indicator$original_code)[i], (spec_indicator$code1)[i]] = (spec_indicator$n)[i]
+}
+
