@@ -65,3 +65,23 @@ results_form$original_code <-
          }
        })
   )
+
+# calculate the agreement percentage -----------------------
+results_form <- 
+  results_form %>%
+  filter(!is.na(original_code) & original_code != "") %>%
+  mutate(agreement = ifelse(code1 == original_code, 1, 0))
+
+mean(results_form$agreement, na.rm = T)
+
+results_form %>%
+  group_by(indicator1) %>%
+  summarise(agreement = mean(agreement, na.rm = T),
+            n = n())
+
+# create the preliminaries of the matrix ---------------
+
+## names of rows/columns --
+spec_indicator <- select(results_form[results_form$indicator == "C2",], indicator, code1, original_code)
+dims <- unique(c(spec_indicator$code1, spec_indicator$original_code))
+
