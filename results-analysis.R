@@ -18,9 +18,50 @@ results_form <-
 
 results_form <- 
   results_form %>%
-  mutate(country = str_extract(country, pattern = "^[A-Z]{3}"))
+  mutate(country = str_extract(country, pattern = "^[A-Z]{3}"),
+         Date = lubridate::ymd(Date))
 
-oxcgrtdata <- fread("https://raw.githubusercontent.com/OxCGRT/covid-policy-tracker/master/data/OxCGRT_latest.csv")
+oxcgrtdata <- fread("https://raw.githubusercontent.com/OxCGRT/covid-policy-tracker/master/data/OxCGRT_latest_combined.csv")
 oxcgrtdata <- as.data.frame(oxcgrtdata)
 
+country_list <- unique(results_form$country)
 
+oxcgrtdata <- 
+  oxcgrtdata %>%
+  filter(CountryCode %in% country_list & RegionCode == "") %>%
+  select(-contains(c("Index", "Confirmed", "M1", "H4", "H5", "E3", "E4", "numeric"))) %>%
+  mutate(Date = lubridate::ymd(Date))
+
+results_form <- left_join(results_form, oxcgrtdata, by = c("country" = "CountryCode", 
+                                                           "Date" = "Date"))
+
+
+results_form <- 
+  results_form %>%
+  filter(!indicator %in% c("H7", "H8")) %>%
+  mutate(code = str_trim(code),
+         indicator = str_extract(indicator, pattern = "^[A-Z][0-9]"),
+         code1 = ifelse(indicator %in% c("C7", "C8", "H2", "H3", "E2"),
+                        str_extract(code, pattern = "^[0-9]"),
+                        str_extract(code, pattern = "(^[0-9][A-Z]|^[0-9]$)")))
+
+results_form$indicator1 <- 
+  unlist(lapply(results_form$indicator, 
+              function(x) { 
+                ifelse(length(str_subset(names(results_form), x)) == 0, NA_character_, str_subset(names(results_form), x))
+                }
+              )) 
+
+
+results_form$original_code <- 
+ unlist( 
+  lapply(1:nrow(results_form),
+       function(x){
+         temp <- (results_form$indicator1)[x]
+         if(!is.na(temp)){
+           results_form[x,] %>% ungroup() %>% pull({{ temp }})  
+         } else {
+           NA
+         }
+       })
+  )
