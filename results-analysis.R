@@ -3,7 +3,9 @@ library(readr)
 library(writexl)
 library(janitor)
 library(data.table)
-
+library(kripp.boot)
+library(irr)
+library(icr)
 
 results_form <- readxl::read_xlsx("./inter-coder-reliability-data.xlsx")
 
@@ -21,6 +23,7 @@ results_form <-
   mutate(country = str_extract(country, pattern = "^[A-Z]{3}"),
          Date = lubridate::ymd(Date))
 
+#oxcgrtdata <- fread("https://raw.githubusercontent.com/OxCGRT/covid-policy-tracker/master/data/OxCGRT_latest.csv")
 oxcgrtdata <- fread("https://raw.githubusercontent.com/OxCGRT/covid-policy-tracker/master/data/OxCGRT_latest_combined.csv")
 oxcgrtdata <- as.data.frame(oxcgrtdata)
 
@@ -101,3 +104,9 @@ for(i in 1:nrow(spec_indicator)){
   A[(spec_indicator$original_code)[i], (spec_indicator$code1)[i]] = (spec_indicator$n)[i]
 }
 
+kripp.alpha(A, method = "ordinal")
+
+A <- matrix(c(spec_indicator$code1, spec_indicator$original_code), ncol = 2)
+
+kripp.alpha(A, method = "nominal")
+krippalpha(A, metric = "nominal")
