@@ -6,6 +6,7 @@ library(data.table)
 library(kripp.boot)
 library(irr)
 library(icr)
+library(stringr)
 
 results_form <- readxl::read_xlsx("./inter-coder-reliability-data.xlsx")
 
@@ -81,6 +82,13 @@ results_form %>%
   group_by(indicator1) %>%
   summarise(agreement = mean(agreement, na.rm = T),
             n = n())
+
+View(
+  results_form %>%
+  filter(agreement == 0) %>%
+  group_by(country) %>%
+  summarise(n = n())
+)
 
 # create the preliminaries of the matrix ---------------
 
