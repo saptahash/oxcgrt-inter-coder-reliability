@@ -29,8 +29,23 @@ oxcgrtdata <- oxcgrtdata[CountryCode == "USA" & RegionCode != ""
 oxcgrt_datacollection <- as.data.table(oxcgrt_datacollection)
 oxcgrt_datacollection <- oxcgrt_datacollection[!is.na(Update)]
 
-# Get random sample of 15 contributors --------------------------
-ICR_allocation <- data.table(Name = c(sample(oxcgrt_datacollection$Name, 15, replace = F)))
+# Get random sample of 7 contributors --------------------------
+ICR_allocation <- data.table(Name = c(sample(oxcgrt_datacollection$Name, 7, replace = F)))
 
-# Which countries are they cuirrently allocated to update? --------------------------------
-ICR_allocation <- oxcgrt_datacollection[ICR_allocation, on = .(Name), .(Name, Update, `Countries in pod`)]
+# Which states are they currently allocated to update? --------------------------------
+ICR_allocation <- oxcgrt_datacollection[ICR_allocation, on = .(Name), .(Name, Update)]
+
+ICR_allocation[, Update := str_replace_all(Update, "_ALL", "")]
+
+ICR_allocation <- ICR_allocation[, Allocation := lapply(ICR_allocation$Update, function(x) sample(str_subset(oxcgrtdata$RegionCode, x, negate = T), 1))
+                              ][,.(Name, Allocation)]
+
+# Generate random set of indicators --------------------------
+indicators <- c(unlist(lapply(seq(1:8), function(x) paste0("C", x))), 
+                unlist(lapply(seq(1:2), function(x) paste0("E", x))),
+                unlist(lapply(c(seq(1:3), 6,7), function(x) paste0("H", x))))
+
+ICR_allocation[, Indicator := sample(indicators,7, replace = T)]
+ 
+# output to a csv ------------------------
+fwrite(ICR_allocation, "./InterCoder_Allocation_US.csv")
