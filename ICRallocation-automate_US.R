@@ -14,7 +14,7 @@ y <- year(alloc_date)
 d <- mday(alloc_date)
 sheet_name <- paste(d, m, y)
 
-oxcgrt_datacollection <- googlesheets4::range_read("1mWtOwn07HLJClOtjrNNrX3y4AjB7WdVCJuU1DwwP284", sheet= "April 20 Allocation")
+oxcgrt_datacollection <- googlesheets4::range_read("1mWtOwn07HLJClOtjrNNrX3y4AjB7WdVCJuU1DwwP284", sheet= "April 27 Allocation1")
 oxcgrt_datacollection <- as.data.table(oxcgrt_datacollection)
 
 # List all the states that are currently being published -----------
